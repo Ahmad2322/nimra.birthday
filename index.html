@@ -209,7 +209,7 @@
         <div class="card">
             <h1>🔒 Private Space</h1>
             <p>This path is locked. To enter, answer the verification prompt below:</p>
-            <input type="text" id="lock-answer" placeholder="What is our favorite inside joke / secret word?" autocomplete="off">
+            <input type="text" id="lock-answer" placeholder="Enter password (hint: nimru)" autocomplete="off">
             <div id="lock-error" class="error-msg">That isn't what we call it! Try again.</div>
             <button onclick="verifySecret()">Unlock Path</button>
         </div>
@@ -268,8 +268,7 @@
     </div>
 
     <script>
-        // CONFIGURATION: Personalize these variables!
-        const SECRET_PASSWORD = "nimru"; // Change this to your actual inside joke/word (Lowercase recommended)
+        const SECRET_PASSWORD = "nimru"; 
         
         const loadingPhrases = [
             "Verifying security handshake...",
@@ -282,16 +281,15 @@
         let accessedCapsules = 0;
         const totalCapsules = 3;
 
-        // Navigation Engine
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Screen 1 Control
         function verifySecret() {
             const input = document.getElementById('lock-answer').value.trim().toLowerCase();
-            if(input === SECRET_PASSWORD.toLowerCase()) {
+            // Upgraded verification line to avoid browser capital letter issues
+            if(input === "nimru") {
                 document.getElementById('lock-error').style.display = 'none';
                 runLoader();
             } else {
@@ -299,3 +297,6 @@
             }
         }
 
+        function runLoader() {
+            showScreen('screen-loading');
+            let step = 0;
