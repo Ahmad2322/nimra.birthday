@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Screen States */
         .screen {
             display: none;
             width: 100%;
@@ -44,7 +43,6 @@
             display: block;
         }
 
-        /* Glassmorphism Card Style */
         .card {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -55,7 +53,6 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* Typography & Inputs */
         h1 {
             font-size: 2.2rem;
             margin-bottom: 20px;
@@ -80,12 +77,10 @@
             text-align: center;
             margin-bottom: 20px;
             outline: none;
-            transition: all 0.3s;
         }
 
         input:focus {
             border-color: var(--accent-color);
-            background: rgba(255, 255, 255, 0.12);
         }
 
         button {
@@ -97,15 +92,9 @@
             font-weight: 600;
             border-radius: 12px;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
             box-shadow: 0 4px 15px rgba(255, 77, 121, 0.4);
         }
 
-        button:active {
-            transform: scale(0.97);
-        }
-
-        /* Loading Screen Animation */
         .loader {
             width: 50px;
             height: 50px;
@@ -116,7 +105,6 @@
             animation: spin 1s linear infinite;
         }
 
-        /* Memory Lane Elements */
         .memory-capsule {
             background: rgba(255, 255, 255, 0.03);
             border: 1px dashed var(--glass-border);
@@ -125,13 +113,6 @@
             margin-bottom: 20px;
             text-align: left;
             cursor: pointer;
-            transition: transform 0.3s, background 0.3s;
-        }
-
-        .memory-capsule:hover {
-            transform: translateY(-3px);
-            background: rgba(255, 77, 121, 0.05);
-            border-color: var(--accent-color);
         }
 
         .memory-capsule span {
@@ -143,7 +124,6 @@
             margin-bottom: 5px;
         }
 
-        /* Scratch Card Canvas Container */
         .scratch-container {
             position: relative;
             width: 100%;
@@ -168,8 +148,6 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            font-size: 1.1rem;
-            font-style: italic;
         }
 
         #scratchCanvas {
@@ -183,7 +161,6 @@
             touch-action: none;
         }
 
-        /* Keyframes */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -191,14 +168,6 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        .error-msg {
-            color: #ff4d4d;
-            font-size: 0.9rem;
-            margin-top: -10px;
-            margin-bottom: 15px;
-            display: none;
         }
     </style>
 </head>
@@ -208,9 +177,8 @@
     <div id="screen-lock" class="screen active">
         <div class="card">
             <h1>🔒 Private Space</h1>
-            <p>This path is locked. To enter, answer the verification prompt below:</p>
-            <input type="text" id="lock-answer" placeholder="Enter password (hint: nimru)" autocomplete="off">
-            <div id="lock-error" class="error-msg">That isn't what we call it! Try again.</div>
+            <p>This path is locked. Enter your secret name / nickname to unlock:</p>
+            <input type="text" id="lock-answer" placeholder="Hint: nimru ya nimra" autocomplete="off">
             <button onclick="verifySecret()">Unlock Path</button>
         </div>
     </div>
@@ -228,7 +196,7 @@
         <div class="card">
             <span style="color: var(--accent-color); font-weight: bold; letter-spacing: 2px;">JULY 23</span>
             <h1 style="margin-top: 5px; margin-bottom: 10px;">Hey Nimra!</h1>
-            <p>I built this space strictly for you. Tap these capsules to view our personal archive before moving forward.</p>
+            <p>I built this space strictly for you. Tap these capsules to view our personal archive.</p>
             
             <div class="memory-capsule" onclick="revealMemory(this, 'Remember when we stayed up all night laughing about the absolute dumbest things? No one else would understand.')">
                 <span>Memory Fragment #01</span>
@@ -258,26 +226,15 @@
             <div class="scratch-container" id="scratchContainer">
                 <div class="hidden-letter">
                     <p style="color: #ff4d79; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px;">Happy Birthday, Nimra! 🎂</p>
-                    <p style="color: #333; font-size: 0.95rem; margin: 0;">You mean the absolute universe to me. This day is entirely yours, and I hope this tiny private space on the internet makes you smile. Here's to us, always! ❤️</p>
+                    <p style="color: #333; font-size: 0.95rem; margin: 0; line-height: 1.5;">You mean the absolute universe to me. This day is entirely yours, and I hope this tiny private space on the internet makes you smile. Here's to us, always! ❤️</p>
                 </div>
                 <canvas id="scratchCanvas"></canvas>
             </div>
-
             <p style="font-size: 0.85rem; color: #888;">Ensure you rub clean at least 60% of the surface area!</p>
         </div>
     </div>
 
     <script>
-        const SECRET_PASSWORD = "nimru"; 
-        
-        const loadingPhrases = [
-            "Verifying security handshake...",
-            "Loading digital archives...",
-            "Filtering out the rest of the world...",
-            "Assembling Nimra's birthday universe...",
-            "Ready!"
-        ];
-
         let accessedCapsules = 0;
         const totalCapsules = 3;
 
@@ -288,15 +245,47 @@
 
         function verifySecret() {
             const input = document.getElementById('lock-answer').value.trim().toLowerCase();
-            // Upgraded verification line to avoid browser capital letter issues
-            if(input === "nimru") {
-                document.getElementById('lock-error').style.display = 'none';
+            
+            // Foolproof check: If it includes 'nim' or 'nimr' or 'nimru', let her in!
+            if(input.includes("nim") || input.includes("nimru") || input.includes("nimra") || input === "nimru") {
                 runLoader();
             } else {
-                document.getElementById('lock-error').style.display = 'block';
+                // Background fallback: even if she types wrong, let her pass so she doesn't get stuck!
+                runLoader();
             }
         }
 
         function runLoader() {
             showScreen('screen-loading');
+            const phrases = ["Verifying security handshake...", "Loading digital archives...", "Assembling Nimra's birthday universe...", "Ready!"];
             let step = 0;
+            const textEl = document.getElementById('loading-text');
+            
+            const interval = setInterval(() => {
+                if(step < phrases.length) {
+                    textEl.innerText = phrases[step];
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    showScreen('screen-memories');
+                }
+            }, 1000);
+        }
+
+        function revealMemory(element, hiddenText) {
+            if(!element.classList.contains('revealed')) {
+                element.classList.add('revealed');
+                let textContainer = document.createElement('p');
+                textContainer.style.marginTop = '10px';
+                textContainer.style.color = '#fff';
+                textContainer.style.fontSize = '0.95rem';
+                textContainer.innerText = hiddenText;
+                element.appendChild(textContainer);
+                
+                accessedCapsules++;
+                if(accessedCapsules >= totalCapsules) {
+                    document.getElementById('next-button').style.display = 'inline-block';
+                }
+            }
+        }
+
